@@ -27,6 +27,13 @@ class Book {
   }
 }
 
+function deleteBook(e) {
+  const bookIndex = myLibrary.indexOf(e.target);
+  myLibrary.splice(bookIndex, 1);
+  saveLocal();
+  e.target.offsetParent.parentElement.remove();
+}
+
 function createCard(book) {
   const column = document.createElement('div');
   column.className = 'mb-3 col-6';
@@ -72,13 +79,6 @@ function createCard(book) {
   card.appendChild(cardBody);
   column.appendChild(card);
   row.appendChild(column);
-}
-
-function deleteBook(e) {
-  const bookIndex = myLibrary.indexOf(e.target);
-  myLibrary.splice(bookIndex, 1);
-  saveLocal();
-  e.target.offsetParent.parentElement.remove();
 }
 
 function resetList() {
