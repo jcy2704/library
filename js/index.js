@@ -10,22 +10,20 @@ function saveLocal() {
   localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
 }
 
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-}
-
-function Card(book) {
-  this.book = book;
-}
-
 function changeStatus(e) {
   if (e.target.textContent === 'Read') {
     e.target.textContent = 'Not Read';
   } else {
     e.target.textContent = 'Read';
+  }
+}
+
+class Book {
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
   }
 }
 
@@ -36,7 +34,7 @@ function deleteBook(e) {
   e.target.offsetParent.parentElement.remove();
 }
 
-Card.prototype.createCard = (book) => {
+function createCard(book) {
   const column = document.createElement('div');
   column.className = 'mb-3 col-6';
 
@@ -81,24 +79,23 @@ Card.prototype.createCard = (book) => {
   card.appendChild(cardBody);
   column.appendChild(card);
   row.appendChild(column);
-};
+}
 
 function resetList() {
   row.innerHTML = '';
 }
 
-function newBook(bookCard) {
+function newBook() {
   resetList();
   myLibrary.forEach((book) => {
-    bookCard.createCard(book);
+    createCard(book);
   });
 }
 
 function restoreLocal() {
   myLibrary = JSON.parse(localStorage.getItem('myLibrary'));
   if (myLibrary === null) myLibrary = [];
-  const bookCard = new Card();
-  newBook(bookCard);
+  newBook();
 }
 
 function cleanInputs() {
@@ -134,8 +131,7 @@ function addBookToLibrary() {
     const book = new Book(title.value, author.value, pages.value, read.checked);
     myLibrary.push(book);
     saveLocal();
-    const bookCard = new Card(book);
-    newBook(bookCard);
+    newBook();
     createAlertDiv('success');
     cleanInputs();
   }
