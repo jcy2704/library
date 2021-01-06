@@ -10,33 +10,12 @@ function saveLocal() {
   localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
 }
 
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-}
+const Book = (title, author, pages, read) => {
+  return {title, author, pages, read};
+};
 
-function Card(book) {
-  this.book = book;
-}
-
-function changeStatus(e) {
-  if (e.target.textContent === 'Read') {
-    e.target.textContent = 'Not Read';
-  } else {
-    e.target.textContent = 'Read';
-  }
-}
-
-function deleteBook(e) {
-  const bookIndex = myLibrary.indexOf(e.target);
-  myLibrary.splice(bookIndex, 1);
-  saveLocal();
-  e.target.offsetParent.parentElement.remove();
-}
-
-Card.prototype.createCard = (book) => {
+const Card = (book) => {
+  const createCard = (book) => {
   const column = document.createElement('div');
   column.className = 'mb-3 col-6';
 
@@ -81,7 +60,25 @@ Card.prototype.createCard = (book) => {
   card.appendChild(cardBody);
   column.appendChild(card);
   row.appendChild(column);
+  }
+
+  return {book, createCard};
 };
+
+function changeStatus(e) {
+  if (e.target.textContent === 'Read') {
+    e.target.textContent = 'Not Read';
+  } else {
+    e.target.textContent = 'Read';
+  }
+}
+
+function deleteBook(e) {
+  const bookIndex = myLibrary.indexOf(e.target);
+  myLibrary.splice(bookIndex, 1);
+  saveLocal();
+  e.target.offsetParent.parentElement.remove();
+}
 
 function resetList() {
   row.innerHTML = '';
@@ -97,7 +94,7 @@ function newBook(bookCard) {
 function restoreLocal() {
   myLibrary = JSON.parse(localStorage.getItem('myLibrary'));
   if (myLibrary === null) myLibrary = [];
-  const bookCard = new Card();
+  const bookCard = Card();
   newBook(bookCard);
 }
 
@@ -131,10 +128,10 @@ function addBookToLibrary() {
     createAlertDiv('danger');
     restoreLocal();
   } else {
-    const book = new Book(title.value, author.value, pages.value, read.checked);
+    const book = Book(title.value, author.value, pages.value, read.checked);
     myLibrary.push(book);
     saveLocal();
-    const bookCard = new Card(book);
+    const bookCard = Card(book);
     newBook(bookCard);
     createAlertDiv('success');
     cleanInputs();
